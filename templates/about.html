@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .greeting {
+      color: orange;
+    }
+  </style>
+  <body>
+    <!-- mustache syntax -->
+    <h1>Hello, <span class="greeting">{{name}}</span>😊</h1>
+    <p>You are super nice, <span class="greeting">{{name}}</span></p>
+    <!-- Task 1.2: List all hobbies - ul hobbies = ["Gaming", "Reading", "Soccer",
+"Ballet", "Gyming", "Yoga"] -->
+    <ul>
+      <li>{{hobbies[0]}}</li>
+      <li>{{hobbies[1]}}</li>
+      <li>{{hobbies[2]}}</li>
+      <li>{{hobbies[3]}}</li>
+      <li>{{hobbies[4]}}</li>
+      <li>{{hobbies[5]}}</li>
+    </ul>
+  </body>
+</html>
