@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .title_rating {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .picture {
+        width: 330px;
+        height: 410px;
+        border-radius: 20px;
+        object-fit: cover;
+      }
+      .movie-card {
+        width: 330px;
+        padding: 20px;
+      }
+      body {
+        font-family: "Roboto", sans-serif;
+      }
+      .rating {
+        font-weight: 700;
+        font-size: 20px;
+      }
+      .title {
+        font-weight: 700;
+      }
+      .movies {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .summary {
+        color: gray;
+        margin-top: 0px;
+      }
+    </style>
+
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div class="movies">
+      {% for movie in movies%}
+      <div class="movie-card">
+        <img class="picture" src="{{movie.poster}}" />
+        <div class="title_rating">
+          <h3 class="title">{{movie.name}}</h3>
+          <p class="rating" onclick="f()">⭐ {{movie.rating}}</p>
+        </div>
+        <p class="summary">{{movie.summary}}</p>
+      </div>
+      {% endfor%}
+    </div>
+  </body>
+</html>
