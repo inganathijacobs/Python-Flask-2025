@@ -3,6 +3,7 @@ from sqlalchemy.sql import text
 
 from config import Config
 from extensions import db
+from models.movie import Movie
 from routes.main_bp import main_bp
 from routes.movies_bp import movies_bp
 from routes.movies_list_bp import movies_list_bp

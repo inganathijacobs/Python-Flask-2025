@@ -1,7 +1,18 @@
 from flask import Blueprint, request
 
+from extensions import db
+from models.movie import Movie
+
 movies_bp = Blueprint("movies_bp", __name__)
 movies = [
+    {
+        "name": "Thor: Ragnarok",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjMyNDkzMzI1OF5BMl5BanBnXkFtZTgwODcxODg5MjI@._V1_.jpg",
+        "summary": "When Earth becomes uninhabitable in the future, a farmer and ex-NASA\\n pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team\\n of researchers, to find a new planet for humans.",
+        "rating": 8.8,
+        "trailer": "https://youtu.be/NgsQ8mVkN8w",
+        "id": "109",
+    },
     {
         "id": "99",
         "name": "Vikram",
@@ -82,14 +93,6 @@ movies = [
         "trailer": "https://www.youtube.com/embed/KsH2LA8pCjo",
         "id": "108",
     },
-    {
-        "name": "Thor: Ragnarok",
-        "poster": "https://m.media-amazon.com/images/M/MV5BMjMyNDkzMzI1OF5BMl5BanBnXkFtZTgwODcxODg5MjI@._V1_.jpg",
-        "summary": "When Earth becomes uninhabitable in the future, a farmer and ex-NASA\\n pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team\\n of researchers, to find a new planet for humans.",
-        "rating": 8.8,
-        "trailer": "https://youtu.be/NgsQ8mVkN8w",
-        "id": "109",
-    },
 ]
 
 
@@ -98,36 +101,71 @@ movies = [
 
 @movies_bp.get("/")
 def get_movies():
-    return movies
+    movies = Movie.query.all()
+    movies_dictionary = [movie.to_dict() for movie in movies]
+    return movies_dictionary
+
+
+# print(movies[0].to_dict())
 
 
 # READ
 @movies_bp.get("/<id>")
 def get_movie_by_id(id):
-    for movie in movies:
-        if movie["id"] == id:
-            return movie
-    return {"message": "Movie not found"}, 404
+    movie = Movie.query.get(id)
+
+    if not movie:
+        return {"message": "Movie not found"}, 404
+
+    data = movie.to_dict()
+    return data
 
 
 # DELETE
 @movies_bp.delete("/<id>")
 def delete_movie_by_id(id):
-    for movie in movies:
-        if movie["id"] == id:
-            movies.remove(movie)
-            return {"message": f"{movie['name']} has been deleted successfully"}
-    return {"message": "Movie not found"}, 404
+    movie = Movie.query.get(id)
+    if not movie:
+        return {"message": "Movie not found"}, 404
+
+    try:
+        data = movie.to_dict()
+        db.session.delete(movie)
+        db.session.commit()
+        return {
+            "message": f"Movie has been deleted successfully",
+            "data": data,
+        }
+    except Exception as e:
+        db.session.rollback()  # undo: restore data
+        return {"message": str(e)}, 500
 
 
 ##CREATE
 @movies_bp.post("/")
 def create_movie():
-    new_movie = request.get_json()
-    ids = [int(movie["id"]) for movie in movies]
-    new_movie["id"] = str(max(ids) + 1)
-    movies.append(new_movie)
-    return {"message": "Movie created successfully"}
+    data = request.get_json()
+    new_movie = Movie(
+        name=data["name"],
+        poster=data["poster"],
+        rating=data["rating"],
+        summary=data["summary"],
+        trailer=data["trailer"],
+    )
+    try:
+        db.session.add(new_movie)
+        db.session.commit()
+        return {
+            "message": "Movie created successfully",
+            "data": new_movie.to_dict(),
+        }, 201
+    except Exception as e:
+        db.session.rollback()
+        return {"message": str(e)}, 500
+    # ids = [int(movie["id"]) for movie in movies]
+    # new_movie["id"] = str(max(ids) + 1)
+    # movies.append(new_movie)
+    # return {"message": "Movie created successfully"}
 
 
 @movies_bp.put("/<id>")
