@@ -1,45 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <style>
-      .picture {
-        width: 150px;
-        height: 150px;
-        border-radius: 100%;
-        object-fit: cover;
-      }
-      body {
-        /* Centering */
-        display: grid;
-        place-content: center;
-        min-height: 100vh;
-        margin-top: 20px;
-        font-family: "Roboto", sans-serif;
-      }
-      .name {
-        font-style: italic;
-        font-weight: 700;
-      }
-      .card {
-        padding-bottom: 40px;
-      }
-      .greeting {
-        text-align: center;
-        font-size: 18px;
-      }
-    </style>
-  </head>
-  <body>
-    {% for user in users%}
-    <div class="card">
-      <img class="picture" src=" {{user.img}}" />
-      <p class="greeting">
-        Hello,<span class="name"> {{user.name}} </span>🎉🎉
-      </p>
-    </div>
-    {% endfor %}
-  </body>
-</html>
+{% extends "base.html" %} {% block head_content %}
+
+<style>
+  .user-name {
+    font-style: italic;
+    font-weight: bold;
+  }
+
+  .user-pic {
+    height: 225px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-container {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+</style>
+
+{% endblock %} {% block content %} {% for user in users %}
+<div class="user-container">
+  <img class="user-pic" src="{{user.pic}}" alt="profile picture" />
+  <p>Hello, <span class="user-name">{{user.name}}</span> 🎉🎉</p>
+</div>
+{% endfor %} {% endblock %}

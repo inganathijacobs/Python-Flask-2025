@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <style>
-    .greeting {
-      color: orange;
-    }
-  </style>
-  <body>
-    <!-- mustache syntax -->
-    <h1>Hello, <span class="greeting">{{name}}</span>😊</h1>
-    <p>You are super nice, <span class="greeting">{{name}}</span></p>
-    <!-- Task 1.2: List all hobbies - ul hobbies = ["Gaming", "Reading", "Soccer",
-"Ballet", "Gyming", "Yoga"] -->
-    <ul>
-      {% for hobby in hobbies%}
-      <li>{{hobby}}</li>
-      {% endfor%}
-    </ul>
-  </body>
-</html>
+{% extends "base.html" %} {% block head_content %}
+<style>
+  .highlight {
+    color: orange;
+  }
+</style>
+{% endblock %} {% block content %}
+
+<h1>Hello, <span class="highlight">{{name}}</span> 😊</h1>
+<p>Your are super nice, {{name}}.</p>
+<!-- Task 1.2: List all hobbies - ul  -->
+<h2>Hobbies</h2>
+<ul>
+  {% for hobby in hobbies %}
+
+  <li>{{hobby}}</li>
+
+  {% endfor %}
+</ul>
+
+{% endblock %}
