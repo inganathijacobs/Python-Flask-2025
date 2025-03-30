@@ -1,6 +1,10 @@
 from pprint import pprint
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, redirect, render_template, request, url_for
+
+from constants import STATUS_CODE
+from extensions import db
+from models.movie import Movie
 
 movies_list_bp = Blueprint("movies_list_bp", __name__)
 movies = [
@@ -99,13 +103,49 @@ HTTP_NOT_FOUND = 404
 
 
 @movies_list_bp.get("/")
-def movies_list_page():
-    return render_template("movies_list.html", movies=movies)
+def movie_list_page():
+    movies = Movie.query.all()
+    movies_dict = [movie.to_dict() for movie in movies]
+    return render_template("movies_list.html", movies=movies_dict)
 
 
 @movies_list_bp.get("/<id>")
 def movies_details_page(id):
-    for movie in movies:
-        if movie["id"] == id:
-            return render_template("movies_details.html", movie=movie)
-    return render_template("not-found.html"), 404
+    movie = Movie.query.get(id)
+
+    if not movie:
+        return render_template("not-found.html"), 404
+
+    data = movie.to_dict()
+    return render_template("movies_details.html", movie=data)
+    # for movie in movies:
+    #     if movie["id"] == id:
+    #         return render_template("movies_details.html", movie=movie)
+    # return render_template("not-found.html"), 404
+
+
+@movies_list_bp.get("/new")
+def add_movie_page():
+    return render_template("add-movie.html")
+
+
+@movies_list_bp.post("/")  # HOF
+def create_movie():
+    data = {
+        "name": request.form.get("name"),
+        "poster": request.form.get("poster"),
+        "rating": request.form.get("rating"),
+        "summary": request.form.get("summary"),
+        "trailer": request.form.get("trailer"),
+    }
+    # data = request.get_json()  # body
+    new_movie = Movie(**data)
+
+    try:
+        # print(new_movie, new_movie.to_dict())
+        db.session.add(new_movie)
+        db.session.commit()
+        return redirect(url_for("movies_list_bp.movie_list_page"))
+    except Exception as e:
+        db.session.rollback()  # Undo: Restore the data | After commit cannot undo
+        return {"message": str(e)}, STATUS_CODE["SERVER_ERROR"]
