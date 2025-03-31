@@ -28,6 +28,7 @@
   .movies {
     display: flex;
     flex-wrap: wrap;
+    gap: 60px;
   }
   .summary {
     color: gray;
@@ -40,11 +41,27 @@
   <div class="movie-card">
     <img class="picture" src="{{movie.poster}}" />
     <div class="title_rating">
-      <h3 class="title">{{movie.name}}</h3>
+      <!-- <a href="/movie-list/{{movie.id}}"
+        ><h3 class="title">{{movie.name}}</h3></a
+      > -->
+      <a href="{{url_for('movies_list_bp.movies_details_page', id=movie.id)}}"
+        ><h3 class="title">{{movie.name}}</h3></a
+      >
       <p class="rating" onclick="f()">⭐ {{movie.rating}}</p>
     </div>
     <p class="summary">{{movie.summary}}</p>
+    <form
+      action="{{url_for('movies_list_bp.movies_details_page', id=movie.id)}}"
+      method="POST"
+      class="form-container"
+    >
+      <button type="submit" class="btn btn-danger">
+        Delete <i class="fa-solid fa-trash"></i>
+      </button>
+    </form>
   </div>
   {% endfor%}
 </div>
 {% endblock %}
+
+<!-- anchor tag works for get -->

@@ -148,4 +148,22 @@ def create_movie():
         return redirect(url_for("movies_list_bp.movie_list_page"))
     except Exception as e:
         db.session.rollback()  # Undo: Restore the data | After commit cannot undo
-        return {"message": str(e)}, STATUS_CODE["SERVER_ERROR"]
+        return redirect(url_for("movies_list_bp.add_movie_page"))
+
+
+# DELETE
+@movies_list_bp.post("/<id>")
+def delete_movie_by_id(id):
+    movie = Movie.query.get(id)
+    if not movie:
+        return render_template("not-found.html"), STATUS_CODE["NOT_FOUND"]
+
+    try:
+        data = movie.to_dict()
+        db.session.delete(movie)
+        db.session.commit()
+        return redirect(url_for("movies_list_bp.movie_list_page"))
+    except Exception as e:
+        db.session.rollback()  # undo: restore data
+        db.session.commit()
+        return redirect(url_for("movies_list_bp.movie_list_page"))
