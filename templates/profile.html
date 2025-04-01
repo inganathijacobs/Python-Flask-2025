@@ -27,9 +27,13 @@
   <img class="user-pic" src="{{user.pic}}" alt="profile picture" />
   <p>
     Hello, <span class="user-name">{{user.name}}</span>
+    <!-- Conditional rendering: HTML Elements -->
     {% if user.isVerified %}
     <span class="verified"><i class="fa-solid fa-circle-check"></i></span>
     {% endif %}
   </p>
 </div>
 {% endfor %} {% endblock %}
+
+<!-- Ternary
+Strings,int,float -->

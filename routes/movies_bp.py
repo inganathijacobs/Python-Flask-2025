@@ -81,11 +81,25 @@ def create_movie():
 
 @movies_bp.put("/<id>")
 def update_movie_by_id(id):
-    body = request.get_json()
+    body = request.get_json()  # body
+    movie = Movie.query.filter_by(id=id)  # None if no movie
+    # filter by-> where condition
+    if not movie:
+        return {"message": "Movie not found"}, STATUS_CODE["NOT_FOUND"]
 
-    for movie in movies:
-        if movie["id"] == id:
-            movie.update(body)
-            return {"message": f"{movie['name']} updated successfully"}
+    # data = movie.to_dict()  # copy of the data
+    # data.update(body)  # updating copy
+    # print(data)
 
-    return {"message": "Movie not found"}, 404
+    try:
+        movie.update(body)
+        db.session.commit()
+        updated_movie = Movie.query.get(id)
+        return {
+            "message": "Movie updated successfully",
+            "data": updated_movie.to_dict(),
+        }
+
+    except Exception as e:
+        db.session.rollback()  # Undo: Restore the data | After commit cannot undo
+        return {"message": str(e)}, STATUS_CODE["SERVER_ERROR"]

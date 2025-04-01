@@ -4,6 +4,7 @@ from sqlalchemy.sql import text
 from config import Config
 from extensions import db
 from models.movie import Movie
+from routes.auth_bp import auth_bp
 from routes.main_bp import main_bp
 from routes.movies_bp import movies_bp
 from routes.movies_list_bp import movies_list_bp
@@ -27,6 +28,7 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(movies_bp, url_prefix="/movies")  # Refactor - Mailability ⬆️
     app.register_blueprint(movies_list_bp, url_prefix="/movie-list")
+    app.register_blueprint(auth_bp)
 
     return app
 
